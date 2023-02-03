@@ -35,16 +35,19 @@ const addContact = async (body) => {
   const newContact = { id: v4(), name, email, phone };
   contacts.push(newContact);
   await updateJson(contacts);
-  return contacts;
+  return newContact;
 }
 
-const updateContact = async (contactId, body) => {
-  const contact = getContactById(contactId);
-  const newContact = { ...contact, ...body };
-
-  return contact;
-  
-}
+const updateContact = async (contactId, { name, email, phone }) => {
+  const contacts = await listContacts();
+  const contactIndex = contacts.findIndex((item) => item.id === contactId);
+  if (contactIndex === -1) {
+    return null;
+  }
+  contacts[contactIndex] = { id:contactId, name, email, phone };
+  await updateJson(contacts);
+  return contacts[contactIndex];
+};
 
 const updateJson = async (contacts) => {
   await fs.writeFile(contactsPath, JSON.stringify(contacts));
