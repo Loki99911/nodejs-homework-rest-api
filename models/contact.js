@@ -1,5 +1,6 @@
 const { Schema, model } = require("mongoose");
 const Joi = require("joi");
+const { mongooseHandleError } = require("../helpers");
 
 const phoneValidation = /^[\(]\d{3}[\)]\s\d{3}[\-]\d{4}$/;
 
@@ -21,22 +22,23 @@ const contactSchema = new Schema({
     type: Boolean,
     default: false,
   },
+  owner: {
+    type: Schema.Types.ObjectId,
+    ref: "user",
+  },
 });
 
-contactSchema.post("save", (error, data, next) => {
-  error.status = 400;
-  next();
-});
+contactSchema.post("save", mongooseHandleError);
 
 const schemaJoi = Joi.object({
   name: Joi.string()
-    .messages({ "any.required": "missing field - name", })
+    .messages({ "any.required": "missing field - name" })
     .required(),
   email: Joi.string()
-    .messages({ "any.required": "missing field - email", })
+    .messages({ "any.required": "missing field - email" })
     .required(),
   phone: Joi.string()
-    .messages({ "any.required": "missing field - phone", })
+    .messages({ "any.required": "missing field - phone" })
     .pattern(phoneValidation)
     .required(),
   favorite: Joi.boolean(),
@@ -44,7 +46,7 @@ const schemaJoi = Joi.object({
 
 const updateFavoriteSchemaJoi = Joi.object({
   favorite: Joi.boolean()
-    .messages({ "any.required": "missing field - favorite", })
+    .messages({ "any.required": "missing field - favorite" })
     .required(),
 });
 
