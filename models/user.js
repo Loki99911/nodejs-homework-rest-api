@@ -26,6 +26,14 @@ const userSchema = new Schema(
       type: String,
       required: [true, "Avatar is required"],
     },
+    verify: {
+      type: Boolean,
+      default: false,
+    },
+    verificationToken: {
+      type: String,
+      required: [true, "Verify token is required"],
+    },
   },
   { versionKey: false, timestamps: true }
 );
@@ -52,6 +60,12 @@ const loginSchemaJoi = Joi.object({
     .required(),
 });
 
+const emailSchemaJoi = Joi.object({
+  email: Joi.string()
+    .messages({ "any.required": "missing field - email" })
+    .required(),
+});
+
 const subscriptionSchemaJoi = Joi.object({
   subscription: Joi.string().valid("starter", "pro", "business").required(),
 });
@@ -63,4 +77,5 @@ module.exports = {
   signupSchemaJoi,
   loginSchemaJoi,
   subscriptionSchemaJoi,
+  emailSchemaJoi,
 };
