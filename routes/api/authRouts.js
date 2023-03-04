@@ -6,6 +6,7 @@ const {
   signupSchemaJoi,
   loginSchemaJoi,
   subscriptionSchemaJoi,
+  emailSchemaJoi
 } = require("../../models/user");
 
 router.post("/signup", validateBody(signupSchemaJoi), ctrl.signup);
@@ -16,8 +17,9 @@ router.patch(
   "/subscription",
   authenticate,
   validateBody(subscriptionSchemaJoi),
-  ctrl.subscription
-  
+  ctrl.subscription  
 );
+router.get("/verify/:verificationToken", ctrl.verify);
+router.post("/verify",validateBody(emailSchemaJoi), ctrl.resendVerify);
 router.patch("/avatars", authenticate, upload.single("avatarURL"), ctrl.updateAvatar);
 module.exports = router;
